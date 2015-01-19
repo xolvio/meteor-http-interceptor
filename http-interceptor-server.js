@@ -18,6 +18,6 @@ function _init () {
     _.each(_interceptors, function (newHost, originalHost) {
       url = url.replace(originalHost, newHost);
     });
-    return _originalCallFunction.apply(this, [method, url, options, callback]);
+    return _originalCallFunction.call(this, method, url, options, callback);
   };
 }
