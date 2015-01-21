@@ -1,0 +1,32 @@
+<body>
+{{> httpCalls}}
+</body>
+
+<template name="httpCalls">
+    <div class="http-calls">
+        <table>
+          {{> httpCallsHeader}}
+          {{#each calls}}
+              <tr>
+                {{> httpCall}}
+              </tr>
+          {{/each}}
+        </table>
+    </div>
+</template>
+
+<template name="httpCallsHeader">
+    <tr>
+        <th class="timestamp">Timestamp</th>
+        <th class="direction">Direction</th>
+        <th class="method">Method</th>
+        <th class="url">Url</th>
+    </tr>
+</template>
+
+<template name="httpCall">
+    <td>{{timestamp}}</td>
+    <td>{{direction}}</td>
+    <td>{{request.method}}</td>
+    <td>{{request.url.href}}</td>
+</template>

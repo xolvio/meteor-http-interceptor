@@ -1,13 +1,28 @@
 Package.describe({
   name: "xolvio:http-interceptor",
-  summary: "Intercepts HTTP calls and allows fake implementations to take over entire domains. Used for testing.",
-  version: "0.2.2",
-  git: "https://github.com/xolvio/meteor-http-interceptor",
+  summary: "Intercepts HTTP calls and allows fake implementations to take over domains. Used for testing.",
+  version: "0.3.0",
   debugOnly: true
 });
 
+Npm.depends({
+  'body-parser': '1.10.1'
+});
+
 Package.on_use(function (api) {
-  api.use('underscore@1.0.2', 'server');
-  api.add_files('http-interceptor-server.js', 'server');
-  api.export('HttpInterceptor', 'server');
+  api.use([
+    'templating@1.0.10',
+    'mongo@1.0.11',
+    'underscore@1.0.2',
+    'momentjs:moment@2.9.0'
+  ], ['server', 'client']);
+
+  api.add_files('client.css', 'client');
+  api.add_files('client.html', 'client');
+
+  api.add_files('collection.js', ['server', 'client']);
+  api.add_files('server.js', 'server');
+  api.add_files('client.js', 'client');
+
+  api.export('HttpInterceptor', ['server', 'client']);
 });

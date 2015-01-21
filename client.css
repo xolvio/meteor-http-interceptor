@@ -1,0 +1,57 @@
+.http-calls {
+
+    font-family: "Consolas", "Menlo", "Courier", monospace;
+    font-size: .8em;
+    white-space: pre;
+
+    position: absolute;
+    z-index: 999999999;
+    width: 800px;
+    height: 456px;
+    right: 0;
+    top: 0;
+
+    overflow: scroll;
+    background-color: rgba(0, 0, 0, .3);
+}
+
+.http-calls table {
+    position: absolute;
+    top: 0;
+    border-collapse: separate;
+    border-spacing: 0 2px;
+    width: 100%;
+
+}
+
+.http-calls table tr {
+    color: white;
+}
+
+.http-calls table th {
+    color: white;
+}
+
+.http-calls table th,
+.http-calls table td {
+    text-align: left;
+    padding: 10px;
+    background-color: rgba(0, 0, 0, .5);
+    color: white;
+}
+
+.http-calls table th.timestamp {
+    width: 100px;
+}
+
+.http-calls table th.direction {
+    width: 50px;
+}
+
+.http-calls table th.method {
+    width: 50px;
+}
+
+.http-calls table th.url {
+
+}
