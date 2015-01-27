@@ -4,7 +4,9 @@ var Fiber                 = Npm.require('fibers'),
     URL                   = Npm.require('url'),
     _interceptors         = {},
     _originalCallFunction = {},
-    _ignores              = [];
+    _ignores              = [],
+    _routeNameCache       = {},
+    _recording            = false;
 
 
 _init();
@@ -28,9 +30,8 @@ rawConnectHandlers.use(Meteor.bindEnvironment(function (req, res, next) {
     if (chunk) {
       responseBody += chunk;
     }
-    // ignore any fields the user is not interested in
-    if (!_shouldIgnore(req.url)) {
 
+    if (_shouldRecord(req.url)) {
 
       var url = URL.parse(URL.resolve(Meteor.absoluteUrl(), req.url));
 
@@ -51,7 +52,6 @@ rawConnectHandlers.use(Meteor.bindEnvironment(function (req, res, next) {
 
     res.end(chunk, encoding);
   });
-
 
   next();
 
@@ -80,6 +80,37 @@ _.extend(HttpInterceptor, {
 
   restore: function () {
     Package.http.HTTP.call = _originalCallFunction;
+  },
+
+  record: function () {
+    _recording = true;
+  },
+
+  setupRoutes: function (session) {
+    _.each(session, function (call) {
+
+      if (call.direction === 'OUT') {
+
+        // setup a route on this guy
+        var route = call.request.url.hostname + call.request.url.pathname;
+
+        // keep track of the routes we create
+        if (_routeNameCache[route]) {
+          // we've already got a canned response for this route
+          return;
+        }
+        _routeNameCache[route] = true;
+
+        // create a server side route that behaved like the recording did
+        Router.route(route, function () {
+          var self = this;
+          self.response.writeHead(call.response.statusCode, {'Content-Type': call.response.headers['content-type']});
+          self.response.end(call.response.content);
+        }, {where: 'server'});
+
+      }
+    });
+
   }
 
 });
@@ -104,7 +135,7 @@ function _init () {
     // do the HTTP call and get the response
     var response = _originalCallFunction.apply(this, [method, url, options, callback]);
 
-    if (_shouldIgnore(url)) {
+    if (!_shouldRecord) {
       return response;
     }
 
@@ -124,7 +155,12 @@ function _init () {
   };
 }
 
+function _shouldRecord (url) {
+  return _recording && !_shouldIgnore(url);
+}
+
 function _shouldIgnore (url) {
+  // ignore any fields the user is not interested in
   var matches = false;
   _.each(_ignores, function (ignore) {
     if (url.match(ignore)) {
