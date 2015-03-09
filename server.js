@@ -135,7 +135,7 @@ function _init () {
     // do the HTTP call and get the response
     var response = _originalCallFunction.apply(this, [method, url, options, callback]);
 
-    if (!_shouldRecord) {
+    if (!_shouldRecord(url)) {
       return response;
     }
 
