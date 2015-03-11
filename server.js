@@ -144,7 +144,7 @@ function _init () {
       timestamp: new Date().getTime(),
       direction: 'OUT',
       request: {
-        options: options,
+        options: JSON.stringify(options),
         method: method.toUpperCase(),
         url: URL.parse(url)
       },
