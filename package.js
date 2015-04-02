@@ -1,7 +1,7 @@
 Package.describe({
   name: "xolvio:http-interceptor",
   summary: "Intercepts HTTP calls and allows fake implementations to take over domains. Used for testing.",
-  version: "0.4.1",
+  version: "0.4.2",
   debugOnly: true
 });
 
