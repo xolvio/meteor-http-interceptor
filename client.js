@@ -1,7 +1,5 @@
 HttpInterceptor = HttpInterceptor || {};
 
-
-
 _.extend(HttpInterceptor, {
 
   reset: function () {
@@ -13,6 +11,9 @@ _.extend(HttpInterceptor, {
 Template.httpCalls.helpers({
   'calls': function () {
     return HttpInterceptor.Calls.find({}, {sort: {timestamp: -1}}).fetch();
+  },
+  'shouldShow': function() {
+    return Session.get('httpInterceptorEnabled');
   }
 });
 
@@ -23,7 +24,7 @@ Template.httpCall.helpers({
 });
 
 Template.httpCall.events({
-  'click td' : function() {
+  'click td': function () {
     console.log(this);
   }
 });

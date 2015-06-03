@@ -3,16 +3,18 @@
 </body>
 
 <template name="httpCalls">
-    <div class="http-calls">
-        <table>
-          {{> httpCallsHeader}}
-          {{#each calls}}
-              <tr>
-                {{> httpCall}}
-              </tr>
-          {{/each}}
-        </table>
-    </div>
+    {{#if shouldShow}}
+        <div class="http-calls">
+            <table>
+                {{> httpCallsHeader}}
+                {{#each calls}}
+                    <tr>
+                        {{> httpCall}}
+                    </tr>
+                {{/each}}
+            </table>
+        </div>
+    {{/if}}
 </template>
 
 <template name="httpCallsHeader">
