@@ -31,9 +31,9 @@ rawConnectHandlers.use(Meteor.bindEnvironment(function (req, res, next) {
       responseBody += chunk;
     }
 
-    if (_shouldRecord(req.url)) {
+    var url = URL.parse(URL.resolve(Meteor.absoluteUrl(), req.url));
 
-      var url = URL.parse(URL.resolve(Meteor.absoluteUrl(), req.url));
+    if (_shouldRecord(url.href)) {
 
       HttpInterceptor.Calls.insert({
         timestamp: new Date().getTime(),
@@ -86,7 +86,8 @@ _.extend(HttpInterceptor, {
     _recording = true;
   },
 
-  setupRoutes: function (session) {
+  playback: function (session) {
+    var self = this;
     _.each(session, function (call) {
 
       if (call.direction === 'OUT') {
@@ -101,12 +102,18 @@ _.extend(HttpInterceptor, {
         }
         _routeNameCache[route] = true;
 
+        console.log('[http-interceptor] Creating server side route at', call.request.url.href);
+
         // create a server side route that behaved like the recording did
         Router.route(route, function () {
           var self = this;
           self.response.writeHead(call.response.statusCode, {'Content-Type': call.response.headers['content-type']});
           self.response.end(call.response.content);
         }, {where: 'server'});
+
+
+        self.registerInterceptor(call.request.url.protocol + '//' + call.request.url.host,
+          Meteor.absoluteUrl(call.request.url.host));
 
       }
     });
@@ -133,7 +140,7 @@ function _init () {
     });
 
     // do the HTTP call and get the response
-    var response = _originalCallFunction.apply(this, [method, url, options, callback]);
+    var response = _originalCallFunction.apply(this, arguments);
 
     if (!_shouldRecord(url)) {
       return response;
