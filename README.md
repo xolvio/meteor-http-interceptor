@@ -9,9 +9,9 @@ GitHub. Your app can work offline even if it has a dependency on OAuth!
 This package is for testing (deterministic responses from 3rd parties) and developing (on planes!) 
 
 #Get the Book
-To learn more about testing with Meteor, consider purchasing our book [The Meteor Testing Manual](http://www.meteortesting.com/?utm_source=cleaner&utm_medium=banner&utm_campaign=cleaner).
+To learn more about testing with Meteor, consider purchasing our book [The Meteor Testing Manual](http://www.meteortesting.com/?utm_source=http-interceptor&utm_medium=banner&utm_campaign=http-interceptor).
 
-[![](http://www.meteortesting.com/img/tmtm.gif)](http://www.meteortesting.com/?utm_source=cleaner&utm_medium=banner&utm_campaign=cleaner)
+[![](http://www.meteortesting.com/img/tmtm.gif)](http://www.meteortesting.com/?utm_source=http-interceptor&utm_medium=banner&utm_campaign=http-interceptor)
 
 Your support helps us continue our work on Velocity and related frameworks.
 
