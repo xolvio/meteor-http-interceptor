@@ -6,7 +6,8 @@ var Fiber                 = Npm.require('fibers'),
     _originalCallFunction = {},
     _ignores              = [],
     _routeNameCache       = {},
-    _recording            = false;
+    _recording            = false,
+    log                   = loglevel.createPackageLogger('http-interceptor', defaultLevel = 'info');
 
 
 _init();
@@ -62,7 +63,7 @@ HttpInterceptor = HttpInterceptor || {};
 _.extend(HttpInterceptor, {
 
   registerInterceptor: function (originalHost, newHost) {
-    console.log('[http-interceptor] Intercepting all calls to', originalHost, 'and redirecting to', newHost);
+    log.debug('Intercepting all calls to', originalHost, 'and redirecting to', newHost);
     _interceptors[originalHost] = newHost;
   },
 
@@ -102,18 +103,16 @@ _.extend(HttpInterceptor, {
         }
         _routeNameCache[route] = true;
 
-        console.log('[http-interceptor] Creating server side route at', call.request.url.href);
+        log.debug('Creating server side route at', call.request.url.href);
 
         // create a server side route that behaved like the recording did
         Router.route(route, function () {
+          log.debug('Serving request to', Meteor.absoluteUrl(route), 'and responding with');
+          //log.debug('Serving request to', route, 'and responding with', JSON.stringify(call.response));
           var self = this;
           self.response.writeHead(call.response.statusCode, {'Content-Type': call.response.headers['content-type']});
-          self.response.end(call.response.content);
+          self.response.end(call.response ? call.response.content : null);
         }, {where: 'server'});
-
-
-        self.registerInterceptor(call.request.url.protocol + '//' + call.request.url.host,
-          Meteor.absoluteUrl(call.request.url.host));
 
       }
     });
@@ -134,13 +133,24 @@ function _init () {
 
   Package.http.HTTP.call = function (method, url, options, callback) {
 
+    if (! callback && typeof options === "function") {
+      callback = options;
+      options = null;
+    }
+    options = options || {};
+
+    log.debug('HTTP.call', method, url, JSON.stringify(options));
+
+    var oldUrl = url;
     // apply any interceptors that have been registered for this call
     _.each(_interceptors, function (newHost, originalHost) {
       url = url.replace(originalHost, newHost);
     });
 
+    log.debug('Rerouting', oldUrl, '->', url);
+
     // do the HTTP call and get the response
-    var response = _originalCallFunction.apply(this, arguments);
+    var response = _originalCallFunction.call(this, method, url, options, callback);
 
     if (!_shouldRecord(url)) {
       return response;

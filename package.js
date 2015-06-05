@@ -1,7 +1,7 @@
 Package.describe({
   name: "xolvio:http-interceptor",
   summary: "Intercepts HTTP calls and allows fake implementations to take over domains. Used for testing.",
-  version: "0.5.0",
+  version: "0.5.1",
   debugOnly: true
 });
 
@@ -14,7 +14,8 @@ Package.on_use(function (api) {
     'templating@1.1.1',
     'mongo@1.1.0',
     'underscore@1.0.3',
-    'momentjs:moment@2.10.3'
+    'momentjs:moment@2.10.3',
+    'practicalmeteor:loglevel'
   ], ['server', 'client']);
 
   api.use(['iron:router@1.0.9'], ['server']);
