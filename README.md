@@ -1,21 +1,23 @@
-Meteor HTTP Interceptor
-=======================
+# Meteor HTTP Interceptor
 
-Intercepts HTTP calls and allows fake implementations to take over entire domains.
+Intercepts HTTP calls and allows fake implementations to take over entire domains. 
 
-See [this repo](https://github.com/xolvio/meteor-github-fake) for an example of OAuth stubbing for 
-GitHub. Your app can work offline even if it has a dependency on OAuth! 
-
-This package is for testing (deterministic responses from 3rd parties) and developing (on planes!) 
-
-#Get the Book
+# Get the Book
 To learn more about testing with Meteor, consider purchasing our book [The Meteor Testing Manual](http://www.meteortesting.com/?utm_source=http-interceptor&utm_medium=banner&utm_campaign=http-interceptor).
 
 [![](http://www.meteortesting.com/img/tmtm.gif)](http://www.meteortesting.com/?utm_source=http-interceptor&utm_medium=banner&utm_campaign=http-interceptor)
 
 Your support helps us continue our work on Velocity and related frameworks.
 
-##Usage:
+## Why?
+See [this repo](https://github.com/xolvio/meteor-github-fake) for an example of OAuth stubbing for 
+GitHub. Your app can work offline even if it has a dependency on OAuth!
+
+This package is for testing (deterministic responses from 3rd parties) and developing (on planes!)
+
+## Usage:
+ 
+
 
 ```javascript
 
@@ -43,5 +45,5 @@ Router.route('fake.api.github.com/user', function () {
 NOTE :This package is a `debugOnly` package, which means it will not be deployed to production and
 will only work in `development` mode.
 
-##Future Work
+## Future Work
 * [ ] Record and playback of responses (Like VCR for rails)

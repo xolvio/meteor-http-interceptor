@@ -15,7 +15,7 @@ Package.on_use(function (api) {
     'mongo@1.1.0',
     'underscore@1.0.3',
     'momentjs:moment@2.10.3',
-    'practicalmeteor:loglevel'
+    'practicalmeteor:loglevel@1.2.0_1'
   ], ['server', 'client']);
 
   api.use(['iron:router@1.0.9'], ['server']);
