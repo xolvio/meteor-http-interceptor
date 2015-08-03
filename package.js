@@ -6,7 +6,8 @@ Package.describe({
 });
 
 Npm.depends({
-  'body-parser': '1.10.1'
+  'body-parser': '1.10.1',
+  'http-proxy': '1.11.1'
 });
 
 Package.on_use(function (api) {
@@ -25,6 +26,7 @@ Package.on_use(function (api) {
 
   api.add_files('collection.js', ['server', 'client']);
   api.add_files('server.js', 'server');
+  api.add_files('proxy.js', 'server');
   api.add_files('client.js', 'client');
 
   api.export('HttpInterceptor', ['server', 'client']);
