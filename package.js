@@ -6,8 +6,7 @@ Package.describe({
 });
 
 Npm.depends({
-  'body-parser': '1.10.1',
-  'http-proxy': '1.11.1'
+  'body-parser': '1.10.1'
 });
 
 Package.on_use(function (api) {
