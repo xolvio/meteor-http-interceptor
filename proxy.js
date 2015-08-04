@@ -33,6 +33,7 @@ HTTP.createServer(function(request, response) {
             url = url.replace(originalHost, newHost);
             log.debug('CAPTURING', oldUrl, '->', url);
             host = URL.parse(newHost).hostname;
+            port = _port;
         }
     });
 
