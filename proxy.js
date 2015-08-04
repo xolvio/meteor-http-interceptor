@@ -2,52 +2,52 @@
  * Crude proxy to allow for some client side fu
  * Intercepting client side calls to hosts registered with HttpInterceptor.registerInterceptor()
  */
-var http = Npm.require('http');
+var HTTP = Npm.require('http');
 var URL = Npm.require('url');
 
 var _PORT_OFFSET = 42;
-var _port = Number(URL.parse(process.env.ROOT_URL).port) + _PORT_OFFSET;
-
-HttpInterceptor.registerInterceptor('http://res.cloudinary.com', Meteor.absoluteUrl('fake.res.cloudinary.com'));
+var _port = Number(URL.parse(process.env.ROOT_URL).port);
+var _proxyPort = _port + _PORT_OFFSET;
 
 Meteor._debug('Starting a proxy server to intercept client side calls on port: ' + _port);
 
-
-http.createServer(function(request, response) {
+HTTP.createServer(function(request, response) {
     var interceptors = HttpInterceptor.getInterceptors();
     var oldUrl = request.url;
     var url = oldUrl;
     var host = request.headers['host'];
-    var proxy, proxy_request;
+    var port = 80;
+    var proxyRequest, requestOptions;
+
+    // Catch and strip port from localhost calls
+    if (/localhost:/.test(host)) {
+        port = URL.parse('http://' + host).port;
+        host = 'localhost';
+    }
 
     _.each(interceptors, function(newHost, originalHost) {
         if (url.indexOf(originalHost) > -1) {
-            Meteor._debug(url, originalHost);
             url = url.replace(originalHost, newHost);
             Meteor._debug('CAPTURING', oldUrl, '->', url);
             host = URL.parse(newHost).hostname;
-            Meteor._debug(host);
         }
     });
 
-    proxy = http.createClient(80, host);
-    Meteor._debug('Just created a client for: ' + host);
-    proxy_request = proxy.request(request.method, url, request.headers);
-    Meteor._debug('Using method: ' + request.method);
+    requestOptions = {
+        host: host,
+        port: port,
+        path: url,
+        method: request.method
+    };
+    Meteor._debug('Just created a proxy request for: ' + host);
     Meteor._debug('Accessing URL: ' + url);
-    proxy_request.addListener('response', function(proxy_response) {
-        proxy_response.addListener('data', function(chunk) {
-            response.write(chunk, 'binary');
-        });
-        proxy_response.addListener('end', function() {
-            response.end();
-        });
-        response.writeHead(proxy_response.statusCode, proxy_response.headers);
+    Meteor._debug('On port : ' + port);
+
+    proxyRequest = HTTP.request(requestOptions, function(proxyResponse) {
+        proxyResponse.pipe(response);
+        //proxyResponse.on('data', function(chunk) {});
+        response.writeHead(proxyResponse.statusCode, proxyResponse.headers)
     });
-    request.addListener('data', function(chunk) {
-        proxy_request.write(chunk, 'binary');
-    });
-    request.addListener('end', function() {
-        proxy_request.end();
-    });
-}).listen(_port);
+    request.pipe(proxyRequest)
+
+}).listen(_proxyPort);
