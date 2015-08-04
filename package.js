@@ -20,6 +20,8 @@ Package.on_use(function (api) {
 
   api.use(['iron:router@1.0.9'], ['server']);
 
+  api.add_files('log.js');
+
   api.add_files('client.css', 'client');
   api.add_files('client.html', 'client');
 
