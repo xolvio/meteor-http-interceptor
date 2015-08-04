@@ -67,6 +67,10 @@ _.extend(HttpInterceptor, {
     _interceptors[originalHost] = newHost;
   },
 
+  getInterceptors: function() {
+    return _interceptors;
+  },
+
   ignore: function (urls) {
     if (urls instanceof Array) {
       _ignores = _ignores.concat(urls);
