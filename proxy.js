@@ -5,8 +5,13 @@
 var http = Npm.require('http');
 var URL = Npm.require('url');
 
+var _PORT_OFFSET = 42;
+var _port = Number(URL.parse(process.env.ROOT_URL).port) + _PORT_OFFSET;
+
 HttpInterceptor.registerInterceptor('http://res.cloudinary.com', Meteor.absoluteUrl('fake.res.cloudinary.com'));
-Meteor._debug(HttpInterceptor.getInterceptors());
+
+Meteor._debug('Starting a proxy server to intercept client side calls on port: ' + _port);
+
 
 http.createServer(function(request, response) {
     var interceptors = HttpInterceptor.getInterceptors();
@@ -45,4 +50,4 @@ http.createServer(function(request, response) {
     request.addListener('end', function() {
         proxy_request.end();
     });
-}).listen(8080);
+}).listen(_port);
