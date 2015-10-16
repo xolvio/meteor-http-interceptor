@@ -2,6 +2,7 @@ Package.describe({
   name: "xolvio:http-interceptor",
   summary: "Intercepts HTTP calls and allows fake implementations to take over domains. Used for testing.",
   version: "0.5.1",
+  git: "https://github.com/xolvio/meteor-http-interceptor.git",
   debugOnly: true
 });
 
@@ -11,6 +12,7 @@ Npm.depends({
 
 Package.on_use(function (api) {
   api.use([
+    'http',
     'templating@1.1.1',
     'mongo@1.1.0',
     'underscore@1.0.3',
