@@ -6,8 +6,7 @@ var Fiber                 = Npm.require('fibers'),
     _originalCallFunction = {},
     _ignores              = [],
     _routeNameCache       = {},
-    _recording            = false,
-    log                   = loglevel.createPackageLogger('http-interceptor', defaultLevel = 'info');
+    _recording            = false;
 
 
 _init();
@@ -63,8 +62,12 @@ HttpInterceptor = HttpInterceptor || {};
 _.extend(HttpInterceptor, {
 
   registerInterceptor: function (originalHost, newHost) {
-    log.debug('Intercepting all calls to', originalHost, 'and redirecting to', newHost);
+    log.info('Intercepting all calls to', originalHost, 'and redirecting to', newHost);
     _interceptors[originalHost] = newHost;
+  },
+
+  getInterceptors: function() {
+    return _interceptors;
   },
 
   ignore: function (urls) {
